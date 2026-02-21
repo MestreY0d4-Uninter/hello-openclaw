@@ -1,0 +1,19 @@
+[project]
+name = "hello-openclaw"
+version = "0.1.0"
+description = "Minimal Python CLI for testing OpenClaw/DevClaw pipeline"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+hello-openclaw = "hello:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
