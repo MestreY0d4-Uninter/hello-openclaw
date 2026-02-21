@@ -12,10 +12,16 @@ from contextlib import redirect_stdout
 
 sys.path.insert(0, "src")
 
-from hello import greet, main  # noqa: E402
+from hello import get_version, greet, main  # noqa: E402
 
 
 class TestHello(unittest.TestCase):
+    def test_version_flag_prints_only_version(self) -> None:
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            main(["--version"])
+        self.assertEqual(buf.getvalue(), f"{get_version()}\n")
+
     def test_greet_basic(self) -> None:
         self.assertEqual(greet("João"), "Olá, João!")
 

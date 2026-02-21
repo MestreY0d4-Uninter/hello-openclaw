@@ -5,11 +5,14 @@ Minimal Python CLI for testing the OpenClaw/DevClaw pipeline end-to-end.
 ## Usage
 
 ```bash
-python src/hello.py João
+python -m hello João
 # Olá, João!
 
-python src/hello.py --uppercase João
+python -m hello --uppercase João
 # OLÁ, JOÃO!
+
+python -m hello --version
+# 0.1.0
 ```
 
 ## QA
