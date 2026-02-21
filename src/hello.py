@@ -6,18 +6,24 @@ import argparse
 import sys
 
 
-def greet(name: str) -> str:
+def greet(name: str, uppercase: bool = False) -> str:
     """Return a greeting for the given name."""
-    return f"Olá, {name}!"
+    greeting = f"Olá, {name}!"
+    return greeting.upper() if uppercase else greeting
 
 
 def main(argv: list[str] | None = None) -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description="Greet someone by name.")
     parser.add_argument("name", help="Name to greet")
+    parser.add_argument(
+        "--uppercase",
+        action="store_true",
+        help="Print greeting in uppercase",
+    )
     args = parser.parse_args(argv)
 
-    print(greet(args.name))
+    print(greet(args.name, uppercase=args.uppercase))
 
 
 if __name__ == "__main__":
