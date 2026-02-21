@@ -10,6 +10,10 @@ python src/hello.py João
 
 python src/hello.py --uppercase João
 # OLÁ, JOÃO!
+
+# Override locale (supported: pt-BR, en-US, es-ES)
+python src/hello.py --locale en-US João
+# Hello, João!
 ```
 
 ## QA

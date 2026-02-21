@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hello-openclaw 0.1.0\n"
+"POT-Creation-Date: 2026-02-21 00:00-0000\n"
+"PO-Revision-Date: 2026-02-21 00:00-0000\n"
+"Language: es-ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/hello.py
+msgid "Hello, %(name)s!"
+msgstr "¡Hola, %(name)s!"
+
+#: src/hello.py
+msgid "Greet someone by name."
+msgstr "Saluda a alguien por su nombre."
+
+#: src/hello.py
+msgid "Name to greet"
+msgstr "Nombre a saludar"
+
+#: src/hello.py
+msgid "Print greeting in uppercase"
+msgstr "Imprimir saludo en mayúsculas"
+
+#: src/hello.py
+msgid "Override locale. Supported: %(locales)s"
+msgstr "Anular locale. Soportados: %(locales)s"
