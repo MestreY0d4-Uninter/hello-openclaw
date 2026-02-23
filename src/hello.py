@@ -12,6 +12,24 @@ DOMAIN = "hello-openclaw"
 SUPPORTED_LOCALES: tuple[str, ...] = ("pt-BR", "en-US", "es-ES")
 
 
+def map_telegram_language_code(language_code: str | None) -> str:
+    """Map Telegram `language_code` to a supported locale.
+
+    Uses prefix matching:
+    - pt* -> pt-BR
+    - en* -> en-US
+    - es* -> es-ES
+    - otherwise -> en-US (fallback)
+
+    Telegram may send values like: "pt-br", "en", "es-ES".
+    """
+
+    if not language_code:
+        return "en-US"
+
+    return map_locale(language_code)
+
+
 def detect_system_locale(env: Mapping[str, str] | None = None) -> str | None:
     """Detect locale from env vars.
 
