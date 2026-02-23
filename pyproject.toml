@@ -5,6 +5,13 @@ description = "Minimal Python CLI for testing OpenClaw/DevClaw pipeline"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+dev = [
+  "coverage>=7,<8",
+  "mypy>=1.8",
+  "ruff>=0.4",
+]
+
 [project.scripts]
 hello-openclaw = "hello:main"
 

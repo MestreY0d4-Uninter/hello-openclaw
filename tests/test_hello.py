@@ -5,6 +5,7 @@ Uses the stdlib `unittest` module to keep the project dependency-free.
 
 from __future__ import annotations
 
+import asyncio
 import io
 import os
 import sys
@@ -23,7 +24,13 @@ from hello import (
     select_locale,
 )  # noqa: E402
 
-from telegram_bot import EffectiveUser, choose_name, is_greeting_trigger  # noqa: E402
+from telegram_bot import (  # noqa: E402
+    EffectiveUser,
+    choose_name,
+    hello_command,
+    is_greeting_trigger,
+    text_message,
+)
 
 
 class TestHello(unittest.TestCase):
@@ -103,6 +110,82 @@ class TestHello(unittest.TestCase):
         self.assertTrue(is_greeting_trigger("OLÁ"))
         self.assertFalse(is_greeting_trigger("olá!"))
         self.assertFalse(is_greeting_trigger("oi tudo bem"))
+
+    def test_hello_command_uses_arg_name_and_calls_send_greeting(self) -> None:
+        calls: list[str] = []
+
+        async def fake_send_greeting(_update: object, _context: object, *, name: str) -> None:
+            calls.append(name)
+
+        class FakeUser:
+            first_name = "Maria"
+            full_name = "Maria Silva"
+            language_code = "pt-br"
+
+        class FakeChat:
+            id = 123
+
+        class FakeUpdate:
+            effective_user = FakeUser()
+            effective_chat = FakeChat()
+
+        class FakeContext:
+            args = ["João"]
+
+        with patch("telegram_bot._send_greeting", fake_send_greeting):
+            asyncio.run(hello_command(FakeUpdate(), FakeContext()))
+
+        self.assertEqual(calls, ["João"])
+
+    def test_text_message_triggers_on_oi_and_uses_profile_name(self) -> None:
+        calls: list[str] = []
+
+        async def fake_send_greeting(_update: object, _context: object, *, name: str) -> None:
+            calls.append(name)
+
+        class FakeMessage:
+            text = " oi "
+
+        class FakeUser:
+            first_name = "Maria"
+            full_name = "Maria Silva"
+            language_code = "pt-br"
+
+        class FakeChat:
+            id = 123
+
+        class FakeUpdate:
+            message = FakeMessage()
+            effective_user = FakeUser()
+            effective_chat = FakeChat()
+
+        class FakeContext:
+            args: list[str] = []
+
+        with patch("telegram_bot._send_greeting", fake_send_greeting):
+            asyncio.run(text_message(FakeUpdate(), FakeContext()))
+
+        self.assertEqual(calls, ["Maria"])
+
+    def test_text_message_ignores_non_trigger(self) -> None:
+        calls: list[str] = []
+
+        async def fake_send_greeting(_update: object, _context: object, *, name: str) -> None:
+            calls.append(name)
+
+        class FakeMessage:
+            text = "oi tudo bem"
+
+        class FakeUpdate:
+            message = FakeMessage()
+
+        class FakeContext:
+            args: list[str] = []
+
+        with patch("telegram_bot._send_greeting", fake_send_greeting):
+            asyncio.run(text_message(FakeUpdate(), FakeContext()))
+
+        self.assertEqual(calls, [])
 
 
 if __name__ == "__main__":

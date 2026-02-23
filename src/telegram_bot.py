@@ -11,6 +11,7 @@ import asyncio
 import logging
 import os
 from dataclasses import dataclass
+from typing import Any
 
 from hello import greet, map_telegram_language_code
 
@@ -49,7 +50,7 @@ def is_greeting_trigger(text: str) -> bool:
     return normalized in {"oi", "olá"}
 
 
-async def _send_greeting(update: object, context: object, *, name: str) -> None:
+async def _send_greeting(update: Any, context: Any, *, name: str) -> None:
     """Send greeting in the same chat, handling API failures gracefully."""
 
     # Import inside function to keep module importable without dependency.
@@ -67,7 +68,7 @@ async def _send_greeting(update: object, context: object, *, name: str) -> None:
         LOGGER.exception("Telegram API error while sending message")
 
 
-async def hello_command(update: object, context: object) -> None:
+async def hello_command(update: Any, context: Any) -> None:
     args = getattr(context, "args", [])
     command_arg = " ".join(args) if args else None
 
@@ -82,7 +83,7 @@ async def hello_command(update: object, context: object) -> None:
     await _send_greeting(update, context, name=name)
 
 
-async def text_message(update: object, context: object) -> None:
+async def text_message(update: Any, context: Any) -> None:
     message = getattr(update, "message", None)
     text = getattr(message, "text", None)
     if not isinstance(text, str):
@@ -118,7 +119,7 @@ def main() -> None:
         filters,
     )
 
-    async def on_error(update: object, context: object) -> None:  # pragma: no cover
+    async def on_error(update: Any, context: Any) -> None:  # pragma: no cover
         LOGGER.exception("Unhandled error while processing update")
 
         # Avoid hot-looping on repeated failures; a small backoff helps.

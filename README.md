@@ -76,6 +76,9 @@ docker run --rm -e TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" hello-openclaw:local
 
 ## QA
 
+Local-first (recomendado):
+
 ```bash
+uv sync --extra dev
 bash scripts/qa.sh
 ```

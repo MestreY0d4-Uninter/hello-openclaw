@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== ruff check ==="
-if command -v ruff >/dev/null 2>&1; then
-  ruff check src/ tests/
+# Local-first QA entrypoint.
+# Prefer running via `uv` to avoid depending on system pip/ensurepip.
+
+if command -v uv >/dev/null 2>&1; then
+  RUN=(uv run --)
 else
-  echo "ruff not found; skipping (install ruff to enable lint gate)"
+  RUN=(python -m)
 fi
+
+echo "=== ruff check ==="
+"${RUN[@]}" ruff check src/ tests/
 
 echo "=== mypy ==="
-if command -v mypy >/dev/null 2>&1; then
-  mypy src/
-else
-  echo "mypy not found; skipping (install mypy to enable type-check gate)"
-fi
+"${RUN[@]}" mypy src/
 
-echo "=== unit tests ==="
-python -m unittest -v
+echo "=== unit tests (with coverage >= 80%) ==="
+"${RUN[@]}" coverage run -m unittest -v
+"${RUN[@]}" coverage report --fail-under=80
 
 echo "=== All QA gates passed ==="
