@@ -19,8 +19,11 @@ from hello import (
     greet,
     main,
     map_locale,
+    map_telegram_language_code,
     select_locale,
 )  # noqa: E402
+
+from telegram_bot import EffectiveUser, choose_name, is_greeting_trigger  # noqa: E402
 
 
 class TestHello(unittest.TestCase):
@@ -77,6 +80,29 @@ class TestHello(unittest.TestCase):
     def test_select_locale_uses_lang_when_others_absent(self) -> None:
         env = {"LANG": "es_ES.UTF-8"}
         self.assertEqual(select_locale(override=None, env=env), "es-ES")
+
+    def test_map_telegram_language_code_prefix_and_fallback(self) -> None:
+        self.assertEqual(map_telegram_language_code("pt-br"), "pt-BR")
+        self.assertEqual(map_telegram_language_code("en"), "en-US")
+        self.assertEqual(map_telegram_language_code("es-ES"), "es-ES")
+        self.assertEqual(map_telegram_language_code("fr"), "en-US")
+        self.assertEqual(map_telegram_language_code(None), "en-US")
+
+    def test_choose_name_priority_command_arg_then_profile(self) -> None:
+        user = EffectiveUser(first_name="Maria", full_name="Maria Silva")
+        self.assertEqual(choose_name("João", user), "João")
+        self.assertEqual(choose_name("   ", user), "Maria")
+        self.assertEqual(choose_name(None, user), "Maria")
+
+    def test_choose_name_uses_full_name_when_no_first_name(self) -> None:
+        user = EffectiveUser(first_name=None, full_name="Maria Silva")
+        self.assertEqual(choose_name(None, user), "Maria Silva")
+
+    def test_is_greeting_trigger_trim_and_casefold(self) -> None:
+        self.assertTrue(is_greeting_trigger(" oi "))
+        self.assertTrue(is_greeting_trigger("OLÁ"))
+        self.assertFalse(is_greeting_trigger("olá!"))
+        self.assertFalse(is_greeting_trigger("oi tudo bem"))
 
 
 if __name__ == "__main__":
